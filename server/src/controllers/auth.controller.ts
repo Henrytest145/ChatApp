@@ -100,6 +100,19 @@ export const logout = async (req: Request, res: Response) => {
 export const getMe = async (req:Request, res:Response) => {
     try {
         const user = await prisma.user.findUnique({where:{id:req.user.id}});
+
+        if (!user) {            
+            res.status(404).json({message:"Usuario no encontrado."});
+            return
+        }
+
+        res.status(200).json({
+            id: user.id,
+            username: user.username,
+            fullName: user.fullName,
+            profilePic: user.profilePic,
+        });
+
     } catch (error:any) {
         console.log(`Error en el controlador getMe: ${error.message}`);
         res.status(400).json({message:"Error en el servidor."});        
